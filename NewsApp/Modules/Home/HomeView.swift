@@ -11,29 +11,28 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     
     var body: some View {
-        NavigationView {
+            VStack(spacing: 0) {
                 if viewModel.news.isEmpty {
                     Text("No news available.")
                         .foregroundColor(.gray)
+                        .font(.title2)
+                        .padding()
                 } else {
                     List(viewModel.news, id: \.url) { article in
-                        VStack(alignment: .leading) {
-                            Text(article.title)
-                                .font(.headline)
-                            Text(article.description)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
+                        NewsRow(article: article)
                     }
+                    .listStyle(.insetGrouped)
                 }
             }
             .navigationTitle("News")
+            .navigationBarTitleDisplayMode(.automatic)
             .onAppear {
                 Task {
                     await viewModel.fetchNews()
                 }
             }
-
-        
-    }
+        }
+    
 }
+
+
