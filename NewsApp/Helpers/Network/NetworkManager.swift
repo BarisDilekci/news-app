@@ -18,18 +18,17 @@ import Foundation
 
 enum URLPath {
     case topHeadlines
-    case topHeadlinesByCategory(category: String)
+    case topHeadlinesByCategory
     
     var rawValue: String {
         switch self {
         case .topHeadlines:
             return "top-headlines"
-        case .topHeadlinesByCategory(let category):
-            return "top-headlines"
+        case .topHeadlinesByCategory:
+            return "top-headlines" // Burada aynı path kullanılıyor, kategori sorgu parametresi olacak
         }
     }
 }
-
 struct NetworkRequest {
     let method: HTTPMethod
     let url: URL
@@ -50,7 +49,7 @@ class NetworkManager {
         }
     }
     
-    func buildURL(urlPath: URLPath, country: String? = nil, category: String? = nil) -> URL? {
+    func buildURL(urlPath: URLPath, country: String = "us", category: String? = nil) -> URL? {
         guard let baseUrl = baseUrl else {
             return nil
         }
@@ -59,14 +58,15 @@ class NetworkManager {
         
         var queryItems: [URLQueryItem] = []
         
-        if let country = country {
-            queryItems.append(URLQueryItem(name: "country", value: country))
-        }
+        // Ülke parametresi
+        queryItems.append(URLQueryItem(name: "country", value: country))
         
-        if let category = category {
+        // Kategori parametresi
+        if urlPath == .topHeadlinesByCategory, let category = category {
             queryItems.append(URLQueryItem(name: "category", value: category))
         }
         
+        // API Anahtarı
         queryItems.append(URLQueryItem(name: "apiKey", value: apiKey))
         
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -81,3 +81,4 @@ extension NetworkRequest {
         case get = "GET"
     }
 }
+

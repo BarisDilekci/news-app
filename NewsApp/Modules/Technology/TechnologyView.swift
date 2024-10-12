@@ -1,14 +1,14 @@
 //
-//  SportsView.swift
+//  TechnologyView.swift
 //  NewsApp
 //
-//  Created by Barış Dilekçi on 11.10.2024.
+//  Created by Barış Dilekçi on 12.10.2024.
 //
 
 import SwiftUI
 
-struct SportsView: View {
-    @StateObject private var viewModel = SportsViewModel()
+struct TechnologyView: View {
+    @StateObject private var viewModel = TechnologyViewModel()
     
     var body: some View {
             VStack(spacing: 0) {
@@ -24,7 +24,7 @@ struct SportsView: View {
                     .listStyle(.insetGrouped)
                 }
             }
-            .navigationTitle("Sports")
+            .navigationTitle("Tecnology")
             .navigationBarTitleDisplayMode(.automatic)
             .onAppear {
                 Task {

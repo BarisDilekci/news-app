@@ -23,6 +23,13 @@ struct TabCoordinator: View {
                 .tabItem {
                     Label("Sport", systemImage: "sportscourt")
                 }
+                
+                NavigationView {
+                    TechnologyView()
+                }
+                .tabItem {
+                    Label("Technology", systemImage: "laptopcomputer") 
+                }
 
                 NavigationView {
                     FavoriteView()

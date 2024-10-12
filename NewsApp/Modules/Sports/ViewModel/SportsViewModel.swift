@@ -1,13 +1,14 @@
 //
-//  HomeViewModel.swift
+//  SportsViewModel.swift
 //  NewsApp
 //
-//  Created by Barış Dilekçi on 11.10.2024.
+//  Created by Barış Dilekçi on 12.10.2024.
 //
+
 import Foundation
 
 @MainActor
-final class HomeViewModel: ObservableObject {
+final class SportsViewModel: ObservableObject {
     @Published var news: [Article] = []
     
     private let client: Client
@@ -18,12 +19,14 @@ final class HomeViewModel: ObservableObject {
         self.networkManager = NetworkManager.shared
     }
     
-    func fetchNews() async {
-        guard let url = networkManager.buildURL(urlPath: .topHeadlines) else {
+    func fetchSportNews() async {
+        guard let url = networkManager.buildURL(urlPath: .topHeadlinesByCategory, country: "us", category: "sports") else {
+            print("Failed to build URL")
             return
         }
-        print(url)
         
+        print("Fetching URL: \(url)") // URL'yi kontrol et
+
         var request = URLRequest(url: url)
         request.httpMethod = NetworkRequest.HTTPMethod.get.rawValue
         
@@ -31,7 +34,8 @@ final class HomeViewModel: ObservableObject {
             let newsResponse: News = try await client.fetch(type: News.self, with: request)
             news = newsResponse.articles
         } catch {
-            print(error.localizedDescription)
+            print("Error fetching news: \(error.localizedDescription)")
         }
     }
+
 }
