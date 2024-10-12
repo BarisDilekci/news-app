@@ -19,7 +19,7 @@ final class TechnologyViewModel: ObservableObject {
         self.networkManager = NetworkManager.shared
     }
     
-    func fetchSportNews() async {
+    func fetchTechnologyNews() async {
         guard let url = networkManager.buildURL(urlPath: .topHeadlinesByCategory, country: "us", category: "technology") else {
             print("Failed to build URL")
             return
