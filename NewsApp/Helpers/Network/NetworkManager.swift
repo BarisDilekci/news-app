@@ -40,7 +40,7 @@ class NetworkManager {
     private let baseUrl: URL?
     private let apiKey: String
     
-    private init() {
+     init() {
         self.baseUrl = URL(string: "https://newsapi.org/v2/")
         self.apiKey = "02592f307fce4acbb3890967aba7aedc"
         

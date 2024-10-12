@@ -9,9 +9,9 @@ import Foundation
 
 
 final class Client: GenericAPI {
-    var session: URLSession
+    var session: URLSessionProtocol
     
-    init(session: URLSession) {
+    init(session: URLSessionProtocol) {
         self.session = session
     }
     

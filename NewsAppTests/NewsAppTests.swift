@@ -8,29 +8,108 @@
 import XCTest
 @testable import NewsApp
 
+struct MyDataType: Codable {
+let key: String
+}
+
+
 final class NewsAppTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+var mockSession: MockURLSession!
+var client : Client!
+var mockNetworkManager : MockNetworkManager!
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+override func setUpWithError() throws {
+    mockSession = MockURLSession()
+    client = Client(session: mockSession)
+    mockNetworkManager = MockNetworkManager()
+}
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
+override func tearDownWithError() throws {
+    mockSession = nil
+    client = nil
+    mockNetworkManager = nil
+}
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+//MARK: - SESSION TEST
+func test_fetch_success() async {
+        let mockData = """
+        { "key": "value" }
+        """.data(using: .utf8)
+        
+        let mockResponse = HTTPURLResponse(url: URL(string: "https://api.example.com")!,
+                                            statusCode: 200,
+                                            httpVersion: nil,
+                                            headerFields: nil)
+        
+        mockSession.data = mockData
+        mockSession.response = mockResponse
+        
+        do {
+            let request = URLRequest(url: URL(string: "https://api.example.com")!)
+            let result: MyDataType = try await client.fetch(type: MyDataType.self, with: request)
+            XCTAssertEqual(result.key, "value")
+        } catch {
+            XCTFail("Beklenmeyen hata: \(error)")
         }
     }
 
+func test_fetch_error_invalid_response() async {
+      mockSession.response = URLResponse()
+      let request = URLRequest(url: URL(string: "https://api.example.com")!)
+      
+      do {
+          _ = try await client.fetch(type: MyDataType.self, with: request)
+          XCTFail("Hata bekleniyordu ama başarılı oldu.")
+      } catch let apiError as APIError {
+          XCTAssertEqual(apiError, APIError.requestFailed(description: "Invalid Response"))
+      } catch {
+          XCTFail("Beklenmeyen hata: \(error)")
+      }
+  }
+
+//MARK: - NETWORK MANAGER TEST
+func test_fetch_for_top_headlines() async  {
+    let apiKey = "02592f307fce4acbb3890967aba7aedc"
+    let expectedURL = URL(string: "https://newsapi.org/v2/top-headlines?country=us&apiKey=\(apiKey)")
+    mockNetworkManager.mockURL = expectedURL
+    
+    let url = mockNetworkManager.buildURL(urlPath: .topHeadlines)
+    
+    XCTAssertEqual(url, expectedURL)
+
+}
+func test_fetch_for_category() async  {
+    let apiKey = "02592f307fce4acbb3890967aba7aedc"
+    let category = "sports"
+    let expectedURL = URL(string: "https://newsapi.org/v2/top-headlines?country=us&category=\(category)&apiKey=\(apiKey)")
+    
+    mockNetworkManager.mockURL = expectedURL
+    
+    let url = mockNetworkManager.buildURL(urlPath: .topHeadlinesByCategory)
+    
+    XCTAssertEqual(url, expectedURL)
+}
+
+func test_failed_for_top_headlines() async  {
+    let apiKey = "02592f307fce4acbb3890967aba7aedc"
+    let expectedURL = URL(string: "https://newsapi.org/v2/top-headlines?country=us&apiKey=\(apiKey)")
+    mockNetworkManager.mockURL = expectedURL
+    
+    let url = mockNetworkManager.buildURL(urlPath: .topHeadlines)
+    
+    XCTAssertEqual(url, expectedURL)
+}
+
+func test_failed_for_category() async  {
+    let apiKey = "02592f307fce4acbb3890967aba7aedc"
+    let category = "sportsss"
+    let expectedURL = URL(string: "https://newsapi.org/v2/top-headlines?country=us&category=\(category)&apiKey=\(apiKey)")
+    
+    mockNetworkManager.mockURL = expectedURL
+    
+    let url = mockNetworkManager.buildURL(urlPath: .topHeadlinesByCategory)
+    
+    XCTAssertEqual(url, expectedURL)
+}
 }

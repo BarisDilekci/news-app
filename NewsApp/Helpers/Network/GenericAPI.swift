@@ -8,7 +8,7 @@
 import Foundation
 
 protocol GenericAPI {
-    var session: URLSession { get }
+    var session: URLSessionProtocol { get }
     func fetch<T: Codable>(type: T.Type, with request: URLRequest) async throws -> T
 }
 
