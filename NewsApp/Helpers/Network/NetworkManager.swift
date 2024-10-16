@@ -25,7 +25,7 @@ enum URLPath {
         case .topHeadlines:
             return "top-headlines"
         case .topHeadlinesByCategory:
-            return "top-headlines" // Burada aynı path kullanılıyor, kategori sorgu parametresi olacak
+            return "top-headlines"
         }
     }
 }
@@ -34,20 +34,28 @@ struct NetworkRequest {
     let url: URL
 }
 
+
+extension NetworkRequest {
+    enum HTTPMethod: String {
+        case get = "GET"
+    }
+}
+
+
 class NetworkManager {
     static let shared = NetworkManager()
     
     private let baseUrl: URL?
     private let apiKey: String
     
-     init() {
-        self.baseUrl = URL(string: "https://newsapi.org/v2/")
-        self.apiKey = "02592f307fce4acbb3890967aba7aedc"
-        
-        guard self.baseUrl != nil else {
-            fatalError("Invalid base URL")
-        }
-    }
+    init() {
+           guard let url = URL(string: "https://newsapi.org/v2/") else {
+               fatalError(NetworkError.invalidURL.localizedDescription)
+           }
+           self.baseUrl = url
+           self.apiKey = "02592f307fce4acbb3890967aba7aedc"
+       }
+       
     
     func buildURL(urlPath: URLPath, country: String = "us", category: String? = nil) -> URL? {
         guard let baseUrl = baseUrl else {
@@ -58,15 +66,12 @@ class NetworkManager {
         
         var queryItems: [URLQueryItem] = []
         
-        // Ülke parametresi
         queryItems.append(URLQueryItem(name: "country", value: country))
         
-        // Kategori parametresi
         if urlPath == .topHeadlinesByCategory, let category = category {
             queryItems.append(URLQueryItem(name: "category", value: category))
         }
         
-        // API Anahtarı
         queryItems.append(URLQueryItem(name: "apiKey", value: apiKey))
         
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
@@ -75,10 +80,3 @@ class NetworkManager {
         return urlComponents?.url
     }
 }
-
-extension NetworkRequest {
-    enum HTTPMethod: String {
-        case get = "GET"
-    }
-}
-

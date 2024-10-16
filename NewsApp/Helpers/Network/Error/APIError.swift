@@ -32,3 +32,11 @@ enum APIError: Error, Equatable {
         }
     }
 }
+
+
+enum NetworkError : Error, Equatable {
+    case invalidURL
+    case invalidResponse
+    case invalidData
+    case noInternet
+}
