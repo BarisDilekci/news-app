@@ -21,20 +21,14 @@ struct NewsRow: View {
                         .cornerRadius(4)
                 } placeholder: {
                     Color.gray.opacity(0.2)
-                        .frame(width: 80, height: 80)
+                        .frame(width: 70, height: 70)
                         .cornerRadius(4)
                 }
             }
-            VStack(alignment: .leading) {
+            VStack(alignment: .center) {
                 Text(article.title)
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 15, weight: .bold))
                     .foregroundColor(.primary)
-                    .lineLimit(3)
-                Text(article.description ?? "No description")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.secondary)
-                    .lineLimit(3)
-                    .truncationMode(.tail)
             }
             .padding(.leading, 8)
         }
