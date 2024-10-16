@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Welcome
-struct News : Codable {
+struct News : Codable{
     var status: String
     var totalResults: Int
     var articles: [Article]
@@ -24,6 +24,10 @@ struct Article : Codable {
     var urlToImage: String?
     var publishedAt: String
     var content: String?
+    
+    var uniqueId: String {
+           return url // URL'yi benzersiz bir anahtar olarak kullanabilirsiniz
+       }
 }
 
 // MARK: - Source

@@ -19,8 +19,10 @@ struct TechnologyView: View {
                     .font(.title2)
                     .padding()
             } else {
-                List(viewModel.news, id: \.url) { article in
-                    NewsRow(article: article)
+                List(viewModel.news, id: \.uniqueId) { article in
+                    NavigationLink(destination: DetailView(article: article)) {
+                        NewsRow(article: article)
+                    }
                 }
                 .listStyle(.insetGrouped)
                 .refreshable {
