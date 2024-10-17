@@ -26,7 +26,7 @@ struct Article : Codable {
     var content: String?
     
     var uniqueId: String {
-           return url // URL'yi benzersiz bir anahtar olarak kullanabilirsiniz
+           return url
        }
 }
 
